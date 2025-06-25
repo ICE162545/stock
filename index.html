@@ -67,8 +67,7 @@
         .dark-mode-toggle {
             position: absolute;
             right: 1.5rem;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 4rem;
             background-color: #4a5568;
             color: #ffffff;
             border: none;
@@ -497,7 +496,7 @@
                 <button type="submit" class="btn bg-blue-600 text-white py-2 px-4 rounded-lg">เพิ่มลูกค้า</button>
             </div>
         </form>
-    </div>
+</div>
 </div>
 
 <script>
@@ -572,7 +571,7 @@ document.getElementById('product-form').addEventListener('submit', function(e) {
     const category = document.getElementById('product-category').value;
     const price = parseFloat(document.getElementById('product-price').value);
     const quantity = parseInt(document.getElementById('product-quantity').value);
-
+    
     const newProduct = {
         id: Date.now().toString(),
         name,
@@ -586,7 +585,7 @@ document.getElementById('product-form').addEventListener('submit', function(e) {
     updateDashboard();
     renderProducts();
 });
-
+    
 function editProduct(id) {
     alert('แก้ไขสินค้า ID: ' + id + ' (ฟังก์ชันยังไม่ได้ถูกสร้าง)');
 }
@@ -615,7 +614,7 @@ document.getElementById('sell-form').addEventListener('submit', function(e) {
     e.preventDefault();
     const productId = sellProductSelect.value;
     const sellQuantity = parseInt(document.getElementById('sell-quantity').value);
-
+    
     const productIndex = products.findIndex(p => p.id === productId);
     if (productIndex > -1) {
         if (products[productIndex].quantity >= sellQuantity) {
@@ -663,7 +662,7 @@ function openDeliveryModal(productId = null) {
         } else {
             alert('ไม่พบสินค้าที่เลือก!');
             deliveryModal.classList.add('hidden');
-            return;
+        return;
         }
     } else {
         deliveryProductSelect.innerHTML = products.map(p => `<option value="${p.id}">${p.name} (${p.quantity} ชิ้น)</option>`).join('');
