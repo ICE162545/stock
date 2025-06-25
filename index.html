@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2D2D2D">
+    <title>ระบบจัดการสต็อกสินค้า</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #212121;
+            --header-bg-color: #2D2D2D;
+            --header-text-color: #e2e8f0;
+            --container-bg-color: #2D2D2D;
+            --card-bg-color: #2D2D2D;
+            --text-color-primary: #e2e8f0;
+            --text-color-secondary: #a0aec0;
+            --table-header-bg: #4a5568;
+            --table-header-text: #e2e8f0;
+            --border-color-subtle: rgba(100, 116, 139, 0.7);
+            --input-border-color: #4a5568;
+            --input-focus-border-color: #63b3ed;
+            --modal-bg-color: #2D2D2D;
+        }
+
+        body.dark-mode {
+            --bg-color: #8ACBDA;
+            --header-bg-color: #8ACBDA;
+            --header-text-color: #374151;
+            --container-bg-color: #ffffff;
+            --card-bg-color: #ffffff;
+            --text-color-primary: #374151;
+            --text-color-secondary: #6B7280;
+            --table-header-bg: #e0f2f7;
+            --table-header-text: #457b9d;
+            --border-color-subtle: rgba(224, 242, 247, 0.7);
+            --input-border-color: #bbdefb;
+            --input-focus-border-color: #457b9d;
+            --modal-bg-color: #ffffff;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0;
+            color: var(--text-color-primary);
+        }
+        .header {
+            background-color: var(--header-bg-color);
+            color: var(--header-text-color);
+            padding: 1.5rem 0;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .dark-mode-toggle {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #4a5568;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+        .dark-mode-toggle:hover {
+            background-color: #2d3748;
+            transform: translateY(-50%) scale(1.05);
+        }
+        .dark-mode-toggle:active {
+            transform: translateY(-50%) scale(0.98);
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+        .container {
+            max-width: 56rem;
+            width: 100%;
+            padding: 2rem 1rem;
+            background-color: var(--container-bg-color);
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+            margin-top: 2rem;
+        }
+        .card, .bg-white.rounded-xl {
+            background-color: var(--card-bg-color);
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s ease-in-out;
+            border: 1px solid var(--border-color-subtle);
+        }
+        .card:hover, .bg-white.rounded-xl:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.12), 0 6px 10px -3px rgba(0, 0, 0, 0.06);
+        }
+        .btn {
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
+            font-weight: 600;
+        }
+        .btn:active {
+            transform: translateY(1px);
+        }
+        .btn.bg-blue-600 { background-color: #3a86ff; box-shadow: 0 2px 4px rgba(58, 134, 255, 0.3); color: white;}
+        .btn.bg-blue-600:hover { background-color: #2a72e8; box-shadow: 0 4px 8px rgba(58, 134, 255, 0.4); }
+
+        .btn.bg-green-600 { background-color: #06d6a0; box-shadow: 0 2px 4px rgba(6, 214, 160, 0.3); color: white;}
+        .btn.bg-green-600:hover { background-color: #05b287; box-shadow: 0 4px 8px rgba(6, 214, 160, 0.4); }
+
+        .btn.bg-purple-600 { background-color: #8338ec; box-shadow: 0 2px 4px rgba(131, 56, 236, 0.3); color: white;}
+        .btn.bg-purple-600:hover { background-color: #6a2ecb; box-shadow: 0 4px 8px rgba(131, 56, 236, 0.4); }
+
+        .btn.bg-gray-200 { background-color: #e0e0e0; color: #555; box-shadow: none; }
+        .btn.bg-gray-200:hover { background-color: #d0d0d0; box-shadow: none; }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            border-color: var(--input-border-color);
+            background-color: var(--card-bg-color);
+            color: var(--text-color-primary);
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+        }
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            border-color: var(--input-focus-border-color);
+            box-shadow: 0 0 0 3px rgba(69, 123, 157, 0.3);
+        }
+        table th, table td {
+            border-bottom: 1px solid var(--border-color-subtle);
+            padding: 1rem 1rem;
+        }
+        table thead th {
+            background-color: var(--table-header-bg);
+            color: var(--table-header-text);
+        }
+        .modal-content {
+            background-color: var(--modal-bg-color);
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.06);
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            color: var(--text-color-primary);
+        }
+        .modal-content h3 {
+            color: var(--text-color-primary);
+        }
+        .modal-content label {
+            color: var(--text-color-primary);
+        }
+        h1, h2, h3, h4, p, span, label, th, td {
+            color: var(--text-color-primary);
+        }
+        .text-gray-500 { color: var(--text-color-secondary) !important; }
+        .text-gray-700 { color: var(--text-color-primary) !important; }
+        .text-gray-800 { color: var(--text-color-primary) !important; }
+        .text-gray-600 { color: var(--text-color-secondary) !important; }
+        .text-gray-400 { color: var(--text-color-secondary) !important; }
+        .border-blue-500 { border-color: #63b3ed !important; }
+        .border-green-500 { border-color: #48bb78 !important; }
+        .border-purple-500 { border-color: #a78bfa !important; }
+        .border-yellow-500 { border-color: #ecc94b !important; }
+        .border-orange-500 { border-color: #f6ad55 !important; }
+
+        .text-blue-600 { color: #63b3ed !important; }
+        .hover\:text-blue-800:hover { color: #4299e1 !important; }
+        .text-red-600 { color: #fc8181 !important; }
+        .hover\:text-red-800:hover { color: #e53e3e !important; }
+        .text-green-600 { color: #48bb78 !important; }
+        .hover\:text-green-800:hover { color: #38a169 !important; }
+
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="header">
+        <h1 class="text-3xl font-bold">ระบบจัดการสต็อกสินค้า</h1>
+        <button id="darkModeToggle" class="dark-mode-toggle">โหมดกลางวัน</button>
+    </div>
+<div id="app-container">
+<main class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+        <div class="card p-6 border-l-4 border-blue-500">
+            <h3 class="text-gray-500 text-sm">มูลค่าสินค้าทั้งหมด</h3>
+            <p class="text-3xl font-bold text-gray-800" id="total-stock-value">฿0.00</p>
+        </div>
+        <div class="card p-6 border-l-4 border-green-500">
+            <h3 class="text-gray-500 text-sm">จำนวนสินค้าทั้งหมด</h3>
+            <p class="text-3xl font-bold text-gray-800" id="total-items">0 ชิ้น</p>
+        </div>
+        <div class="card p-6 border-l-4 border-purple-500">
+            <h3 class="text-gray-500 text-sm">ประเภทสินค้า</h3>
+            <p class="text-3xl font-bold text-gray-800" id="total-categories">0 ประเภท</p>
+        </div>
+        <div class="card p-6 border-l-4 border-yellow-500">
+            <h3 class="text-gray-500 text-sm">ยอดขายวันนี้</h3>
+            <p class="text-3xl font-bold text-gray-800" id="today-sales">฿0.00</p>
+        </div>
+        <div class="card p-6 border-l-4 border-orange-500">
+            <h3 class="text-gray-500 text-sm">จำนวนลูกค้าทั้งหมด</h3>
+            <p class="text-3xl font-bold text-gray-800" id="total-customers">0 คน</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">เพิ่มสินค้าใหม่</h2>
+            <form id="product-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อสินค้า</label>
+                    <input type="text" id="product-name" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ประเภทสินค้า</label>
+                    <select id="product-category" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                        <option value="อาหาร">อาหาร</option>
+                        <option value="เครื่องดื่ม">เครื่องดื่ม</option>
+                        <option value="เครื่องใช้ไฟฟ้า">เครื่องใช้ไฟฟ้า</option>
+                        <option value="เสื้อผ้า">เสื้อผ้า</option>
+                        <option value="อื่นๆ">อื่นๆ</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ราคา (บาท)</label>
+                    <input type="number" id="product-price" min="0" step="0.01" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">จำนวน</label>
+                    <input type="number" id="product-quantity" min="1" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+                </div>
+                <button type="submit" class="btn w-full bg-blue-600 text-white py-2 px-4 rounded-lg">เพิ่มสินค้า</button>
+            </form>
+        </div>
+
+        <div class="rounded-xl shadow-md p-6 lg:col-span-2 border-l-4 border-blue-500">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-gray-800">รายการสินค้า</h2>
+                <div class="flex space-x-2">
+                    <button id="btn-sell" class="btn bg-green-600 text-white py-2 px-4 rounded-lg">บันทึกการขาย</button>
+                    <button id="btn-report" class="btn bg-purple-600 text-white py-2 px-4 rounded-lg">รายงาน</button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ชื่อสินค้า</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ประเภท</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ราคา</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">จำนวน</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">มูลค่ารวม</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="product-list">
+                    </tbody>
+                </table>
+            </div>
+            <div id="empty-message" class="text-center py-8 text-gray-500">
+                ยังไม่มีสินค้าในระบบ กรุณาเพิ่มสินค้า
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-8 rounded-xl shadow-md p-6 border-l-4 border-purple-500">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-800">รายชื่อลูกค้า</h2>
+            <button id="add-customer-btn" class="btn bg-purple-600 text-white py-2 px-4 rounded-lg">เพิ่มลูกค้า</button>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ชื่อลูกค้า</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ที่อยู่</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ประเภทรถ</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">จำนวน</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ราคารวม</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody id="customer-list">
+                </tbody>
+            </table>
+        </div>
+        <div id="empty-customer-message" class="text-center py-8 text-gray-500">
+            ยังไม่มีลูกค้าในระบบ กรุณาเพิ่มลูกค้า
+        </div>
+    </div>
+
+    <div class="mt-8 rounded-xl shadow-md p-6">
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">สรุปตามประเภทสินค้า</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">ประเภทสินค้า</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">จำนวนรายการ</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">จำนวนชิ้นรวม</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">มูลค่ารวม</th>
+                    </tr>
+                </thead>
+                <tbody id="category-summary">
+                </tbody>
+            </table>
+        </div>
+        <div id="empty-category-message" class="text-center py-8 text-gray-500">
+            ยังไม่มีข้อมูลประเภทสินค้า
+        </div>
+    </div>
+
+    <div class="mt-8 rounded-xl shadow-md p-6">
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">ยอดขายรายวัน</h2>
+        <div class="h-64">
+            <div id="sales-chart" class="w-full h-full flex items-end justify-around">
+            </div>
+        </div>
+        <div class="flex justify-center space-x-4 mt-2">
+            <div class="flex items-center">
+                <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                <span class="text-sm text-gray-600">ยอดขาย</span>
+            </div>
+        </div>
+    </div>
+</main>
+</div>
+
+<div id="sell-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+<div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md modal-content">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold text-gray-800">บันทึกการขาย</h3>
+        <button id="close-sell-modal" class="text-gray-500 hover:text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+    <form id="sell-form" class="space-y-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">เลือกสินค้า</label>
+            <select id="sell-product" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+            </select>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">จำนวนที่ขาย</label>
+            <input type="number" id="sell-quantity" min="1" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+        </div>
+        <div class="flex justify-end space-x-2">
+            <button type="button" id="cancel-sell" class="btn bg-gray-200 text-gray-800 py-2 px-4 rounded-lg">ยกเลิก</button>
+            <button type="submit" class="btn bg-green-600 text-white py-2 px-4 rounded-lg">บันทึกการขาย</button>
+        </div>
+    </form>
+</div>
+</div>
+
+<div id="report-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+<div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto modal-content">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold text-gray-800">รายงานสรุป</h3>
+        <button id="close-report-modal" class="text-gray-500 hover:text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+    <div class="space-y-6">
+        <div>
+            <h4 class="font-medium text-lg text-gray-700 mb-2">ยอดขายรายวัน</h4>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">วันที่</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">ยอดขาย</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">จำนวนรายการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="daily-sales-report">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div>
+            <h4 class="font-medium text-lg text-gray-700 mb-2">สินค้าขายดี</h4>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">ชื่อสินค้า</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">ประเภท</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">จำนวนที่ขายได้</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">ยอดขายรวม</th>
+                        </tr>
+                    </thead>
+                    <tbody id="top-products-report">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="flex justify-end">
+            <button id="print-report" class="btn bg-blue-600 text-white py-2 px-4 rounded-lg">พิมพ์รายงาน</button>
+        </div>
+    </div>
+</div>
+</div>
+
+<div id="delivery-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md modal-content">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">บันทึกการจัดส่งสำเร็จ</h3>
+            <button id="close-delivery-modal" class="text-gray-500 hover:text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form id="delivery-form" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">เลือกสินค้า</label>
+                <select id="delivery-product" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">จำนวนที่จัดส่ง</label>
+                <input type="number" id="delivery-quantity" min="1" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button type="button" id="cancel-delivery" class="btn bg-gray-200 text-gray-800 py-2 px-4 rounded-lg">ยกเลิก</button>
+                <button type="submit" class="btn bg-green-600 text-white py-2 px-4 rounded-lg">บันทึกการจัดส่ง</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="customer-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md modal-content">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">เพิ่มลูกค้าใหม่</h3>
+            <button id="close-customer-modal" class="text-gray-500 hover:text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form id="customer-form" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อลูกค้า</label>
+                <input type="text" id="customer-name" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">ที่อยู่</label>
+                <input type="text" id="customer-address" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">ประเภทรถ</label>
+                <select id="customer-vehicle-type" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                    <option value="รถยนต์">รถยนต์</option>
+                    <option value="รถจักรยานยนต์">รถจักรยานยนต์</option>
+                    <option value="รถบรรทุก">รถบรรทุก</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">จำนวน</label>
+                <input type="number" id="customer-quantity" min="1" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">ราคารวม (บาท)</label>
+                <input type="number" id="customer-price" min="0" step="0.01" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button type="button" id="cancel-customer" class="btn bg-gray-200 text-gray-800 py-2 px-4 rounded-lg">ยกเลิก</button>
+                <button type="submit" class="btn bg-blue-600 text-white py-2 px-4 rounded-lg">เพิ่มลูกค้า</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+let products = JSON.parse(localStorage.getItem('products')) || [];
+let sales = JSON.parse(localStorage.getItem('sales')) || [];
+let customers = JSON.parse(localStorage.getItem('customers')) || [];
+
+function formatCurrency(amount) {
+    return '฿' + parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+}
+
+function formatDate(date) {
+    const d = new Date(date);
+    return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+}
+
+function getTodayDate(dateObj) {
+    const d = dateObj || new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function updateDashboard() {
+    const totalValue = products.reduce((sum, product) => sum + (product.price * product.quantity), 0);
+    document.getElementById('total-stock-value').textContent = formatCurrency(totalValue);
+    
+    const totalItems = products.reduce((sum, product) => sum + product.quantity, 0);
+    document.getElementById('total-items').textContent = `${totalItems} ชิ้น`;
+    
+    const categories = [...new Set(products.map(product => product.category))];
+    document.getElementById('total-categories').textContent = `${categories.length} ประเภท`;
+    
+    const todayDate = getTodayDate();
+    const todaySales = sales
+        .filter(sale => sale.date === todayDate)
+        .reduce((sum, sale) => sum + sale.total, 0);
+    document.getElementById('today-sales').textContent = formatCurrency(todaySales);
+    
+    document.getElementById('total-customers').textContent = `${customers.length} คน`;
+    
+    updateCategorySummary();
+    renderDailySalesChart();
+}
+
+function renderProducts() {
+    const productList = document.getElementById('product-list');
+    productList.innerHTML = '';
+    if (products.length === 0) {
+        document.getElementById('empty-message').style.display = 'block';
+    } else {
+        document.getElementById('empty-message').style.display = 'none';
+        products.forEach(product => {
+            const row = productList.insertRow();
+            row.innerHTML = `
+                <td class="py-3 px-4 text-sm text-gray-800">${product.name}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">${product.category}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">${formatCurrency(product.price)}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">${product.quantity}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">${formatCurrency(product.price * product.quantity)}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">
+                    <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="editProduct('${product.id}')">แก้ไข</button>
+                    <button class="text-red-600 hover:text-red-800" onclick="deleteProduct('${product.id}')">ลบ</button>
+                    <button class="text-green-600 hover:text-green-800 ml-2" onclick="openDeliveryModal('${product.id}')">จัดส่ง</button>
+                </td>
+            `;
+        });
+    }
+}
+
+document.getElementById('product-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('product-name').value;
+    const category = document.getElementById('product-category').value;
+    const price = parseFloat(document.getElementById('product-price').value);
+    const quantity = parseInt(document.getElementById('product-quantity').value);
+
+    const newProduct = {
+        id: Date.now().toString(),
+        name,
+        category,
+        price,
+        quantity
+    };
+    products.push(newProduct);
+    localStorage.setItem('products', JSON.stringify(products));
+    this.reset();
+    updateDashboard();
+    renderProducts();
+});
+
+function editProduct(id) {
+    alert('แก้ไขสินค้า ID: ' + id + ' (ฟังก์ชันยังไม่ได้ถูกสร้าง)');
+}
+
+function deleteProduct(id) {
+    if (confirm('คุณต้องการลบสินค้านี้ใช่หรือไม่?')) {
+        products = products.filter(product => product.id !== id);
+        localStorage.setItem('products', JSON.stringify(products));
+        updateDashboard();
+        renderProducts();
+    }
+}
+
+const sellModal = document.getElementById('sell-modal');
+const sellProductSelect = document.getElementById('sell-product');
+
+document.getElementById('btn-sell').addEventListener('click', function() {
+    sellProductSelect.innerHTML = products.map(p => `<option value="${p.id}">${p.name} (${p.quantity} ชิ้น)</option>`).join('');
+    sellModal.classList.remove('hidden');
+});
+
+document.getElementById('close-sell-modal').addEventListener('click', () => sellModal.classList.add('hidden'));
+document.getElementById('cancel-sell').addEventListener('click', () => sellModal.classList.add('hidden'));
+
+document.getElementById('sell-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const productId = sellProductSelect.value;
+    const sellQuantity = parseInt(document.getElementById('sell-quantity').value);
+
+    const productIndex = products.findIndex(p => p.id === productId);
+    if (productIndex > -1) {
+        if (products[productIndex].quantity >= sellQuantity) {
+            products[productIndex].quantity -= sellQuantity;
+            
+            const todayDate = getTodayDate();
+            const existingSaleIndex = sales.findIndex(s => s.date === todayDate);
+            if (existingSaleIndex > -1) {
+                sales[existingSaleIndex].total += products[productIndex].price * sellQuantity;
+                sales[existingSaleIndex].items_count += sellQuantity;
+            } else {
+                sales.push({
+                    date: todayDate,
+                    total: products[productIndex].price * sellQuantity,
+                    items_count: sellQuantity
+                });
+            }
+
+            localStorage.setItem('products', JSON.stringify(products));
+            localStorage.setItem('sales', JSON.stringify(sales));
+            updateDashboard();
+            renderProducts();
+            sellModal.classList.add('hidden');
+            this.reset();
+            alert('บันทึกการขายเรียบร้อย!');
+        } else {
+            alert('จำนวนสินค้าไม่เพียงพอในสต็อก!');
+        }
+    } else {
+        alert('ไม่พบสินค้า!');
+    }
+});
+
+const deliveryModal = document.getElementById('delivery-modal');
+const deliveryProductSelect = document.getElementById('delivery-product');
+let currentDeliveryProductId = null;
+
+function openDeliveryModal(productId = null) {
+    currentDeliveryProductId = productId;
+    if (productId) {
+        const product = products.find(p => p.id === productId);
+        if (product) {
+            deliveryProductSelect.innerHTML = `<option value="${product.id}">${product.name} (${product.quantity} ชิ้น)</option>`;
+            document.getElementById('delivery-quantity').value = 1;
+        } else {
+            alert('ไม่พบสินค้าที่เลือก!');
+            deliveryModal.classList.add('hidden');
+            return;
+        }
+    } else {
+        deliveryProductSelect.innerHTML = products.map(p => `<option value="${p.id}">${p.name} (${p.quantity} ชิ้น)</option>`).join('');
+    }
+    deliveryModal.classList.remove('hidden');
+}
+
+document.getElementById('close-delivery-modal').addEventListener('click', () => deliveryModal.classList.add('hidden'));
+document.getElementById('cancel-delivery').addEventListener('click', () => deliveryModal.classList.add('hidden'));
+
+document.getElementById('delivery-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const productId = deliveryProductSelect.value;
+    const deliveryQuantity = parseInt(document.getElementById('delivery-quantity').value);
+
+    const productIndex = products.findIndex(p => p.id === productId);
+    if (productIndex > -1) {
+        if (products[productIndex].quantity >= deliveryQuantity) {
+            products[productIndex].quantity -= deliveryQuantity;
+            localStorage.setItem('products', JSON.stringify(products));
+            updateDashboard();
+            renderProducts();
+            deliveryModal.classList.add('hidden');
+            this.reset();
+            alert(`สินค้า ${products[productIndex].name} จำนวน ${deliveryQuantity} ชิ้น จัดส่งสำเร็จ!`);
+        } else {
+            alert('จำนวนสินค้าไม่เพียงพอสำหรับการจัดส่ง!');
+        }
+    } else {
+        alert('ไม่พบสินค้า!');
+    }
+});
+
+function renderCustomers() {
+    const customerList = document.getElementById('customer-list');
+    customerList.innerHTML = '';
+    if (customers.length === 0) {
+        document.getElementById('empty-customer-message').style.display = 'block';
+    } else {
+        document.getElementById('empty-customer-message').style.display = 'none';
+        customers.forEach(customer => {
+            const row = customerList.insertRow();
+            row.innerHTML = `
+                <td class="py-3 px-4 text-sm text-gray-800">${customer.name}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">${customer.address}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">${customer.vehicleType}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">${customer.quantity}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">${formatCurrency(customer.price)}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">
+                    <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="editCustomer('${customer.id}')">แก้ไข</button>
+                    <button class="text-red-600 hover:text-red-800" onclick="deleteCustomer('${customer.id}')">ลบ</button>
+                </td>
+            `;
+        });
+    }
+}
+
+const customerModal = document.getElementById('customer-modal');
+const addCustomerBtn = document.getElementById('add-customer-btn');
+const closeCustomerModalBtn = document.getElementById('close-customer-modal');
+const cancelCustomerBtn = document.getElementById('cancel-customer');
+const customerForm = document.getElementById('customer-form');
+
+addCustomerBtn.addEventListener('click', () => {
+    customerForm.reset();
+    customerModal.classList.remove('hidden');
+});
+
+closeCustomerModalBtn.addEventListener('click', () => customerModal.classList.add('hidden'));
+cancelCustomerBtn.addEventListener('click', () => customerModal.classList.add('hidden'));
+
+customerForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('customer-name').value;
+    const address = document.getElementById('customer-address').value;
+    const vehicleType = document.getElementById('customer-vehicle-type').value;
+    const quantity = parseInt(document.getElementById('customer-quantity').value);
+    const price = parseFloat(document.getElementById('customer-price').value);
+
+    const newCustomer = {
+        id: Date.now().toString(),
+        name,
+        address,
+        vehicleType,
+        quantity,
+        price
+    };
+    customers.push(newCustomer);
+    localStorage.setItem('customers', JSON.stringify(customers));
+    customerModal.classList.add('hidden');
+    updateDashboard();
+    renderCustomers();
+    alert('เพิ่มลูกค้าเรียบร้อย!');
+});
+
+function editCustomer(id) {
+    alert('แก้ไขลูกค้า ID: ' + id + ' (ฟังก์ชันยังไม่ได้ถูกสร้าง)');
+}
+
+function deleteCustomer(id) {
+    if (confirm('คุณต้องการลบลูกค้ารายนี้ใช่หรือไม่?')) {
+        customers = customers.filter(customer => customer.id !== id);
+        localStorage.setItem('customers', JSON.stringify(customers));
+        updateDashboard();
+        renderCustomers();
+    }
+}
+
+function updateCategorySummary() {
+    const categorySummary = document.getElementById('category-summary');
+    categorySummary.innerHTML = '';
+    
+    if (products.length === 0) {
+        document.getElementById('empty-category-message').style.display = 'block';
+        return;
+    } else {
+        document.getElementById('empty-category-message').style.display = 'none';
+    }
+
+    const summary = {};
+    products.forEach(product => {
+        if (!summary[product.category]) {
+            summary[product.category] = { items_count: 0, total_quantity: 0, total_value: 0 };
+        }
+        summary[product.category].items_count++;
+        summary[product.category].total_quantity += product.quantity;
+        summary[product.category].total_value += (product.price * product.quantity);
+    });
+
+    for (const category in summary) {
+        const row = categorySummary.insertRow();
+        row.innerHTML = `
+            <td class="py-3 px-4 text-sm text-gray-800">${category}</td>
+            <td class="py-3 px-4 text-sm text-gray-800">${summary[category].items_count}</td>
+            <td class="py-3 px-4 text-sm text-gray-800">${summary[category].total_quantity}</td>
+            <td class="py-3 px-4 text-sm text-gray-800">${formatCurrency(summary[category].total_value)}</td>
+        `;
+    }
+}
+
+function renderDailySalesChart() {
+    const salesChart = document.getElementById('sales-chart');
+    salesChart.innerHTML = '';
+
+    const last7DaysSales = [];
+    const today = new Date();
+
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        const dateString = getTodayDate(d);
+        const daySale = sales.find(s => s.date === dateString);
+        last7DaysSales.push({
+            date: formatDate(d),
+            total: daySale ? daySale.total : 0
+        });
+    }
+
+    const maxSales = Math.max(...last7DaysSales.map(s => s.total), 1);
+
+    last7DaysSales.forEach(day => {
+        const barHeight = (day.total / maxSales) * 100;
+        const bar = document.createElement('div');
+        bar.className = 'flex flex-col items-center justify-end w-1/7 h-full text-center';
+        bar.innerHTML = `
+            <div class="bg-blue-500 rounded-t-lg" style="height: ${barHeight}%; width: 70%;"></div>
+            <span class="text-xs text-gray-600 mt-1">${day.total > 0 ? formatCurrency(day.total) : ''}</span>
+            <span class="text-xs text-gray-500">${day.date.split('/')[0]}</span>
+        `;
+        salesChart.appendChild(bar);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateDashboard();
+    renderProducts();
+    renderCustomers();
+
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme === 'light-mode') {
+        body.classList.add('dark-mode');
+        darkModeToggle.textContent = 'โหมดกลางคืน';
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', '#8ACBDA');
+    } else {
+        body.classList.remove('dark-mode');
+        darkModeToggle.textContent = 'โหมดกลางวัน';
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', '#2d3748');
+    }
+
+    darkModeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        if (body.classList.contains('dark-mode')) {
+            localStorage.setItem('theme', 'light-mode');
+            darkModeToggle.textContent = 'โหมดกลางคืน';
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', '#8ACBDA');
+        } else {
+            localStorage.setItem('theme', 'dark-mode');
+            darkModeToggle.textContent = 'โหมดกลางวัน';
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', '#2d3748');
+        }
+    });
+});
+</script>
+</body>
+</html>
