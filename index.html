@@ -291,6 +291,7 @@
                 <div class="flex space-x-2">
                     <button id="btn-sell" class="btn bg-green-600 text-white py-2 px-4 rounded-lg">บันทึกการขาย</button>
                     <button id="btn-report" class="btn bg-purple-600 text-white py-2 px-4 rounded-lg">รายงาน</button>
+                    <button id="btn-reset-data" class="btn bg-red-600 text-white py-2 px-4 rounded-lg">รีเซ็ตข้อมูล</button>
                 </div>
             </div>
             <div class="overflow-x-auto">
@@ -980,6 +981,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const isCurrentlyDark = body.classList.contains('dark-mode');
         applyTheme(!isCurrentlyDark); // If currently dark, apply light, else apply dark
         localStorage.setItem('theme', !isCurrentlyDark ? 'dark' : 'light');
+    });
+
+    // Event listener for Reset Data button
+    document.getElementById('btn-reset-data').addEventListener('click', () => {
+        if (confirm('คุณแน่ใจหรือไม่ว่าต้องการรีเซ็ตข้อมูลทั้งหมด? การดำเนินการนี้ไม่สามารถย้อนกลับได้!')) {
+            localStorage.removeItem('products');
+            localStorage.removeItem('sales');
+            localStorage.removeItem('customers');
+            alert('รีเซ็ตข้อมูลเรียบร้อยแล้ว!');
+            window.location.reload(); // Reload the page to reflect empty state
+        }
     });
 });
 </script>
