@@ -9,7 +9,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #212121;
+            --bg-color: #f8f9fa; /* Light background */
+            --header-bg-color: #e9ecef;
+            --header-text-color: #212529;
+            --container-bg-color: #ffffff;
+            --card-bg-color: #ffffff;
+            --text-color-primary: #212529;
+            --text-color-secondary: #495057;
+            --table-header-bg: #dee2e6;
+            --table-header-text: #343a40;
+            --border-color-subtle: rgba(0, 0, 0, 0.1);
+            --input-border-color: #ced4da;
+            --input-focus-border-color: #80bdff;
+            --modal-bg-color: #ffffff;
+            --input-focus-border-color-shadow: rgba(128, 189, 255, 0.3);
+        }
+
+        body.dark-mode {
+            --bg-color: #212121; /* Dark background */
             --header-bg-color: #2D2D2D;
             --header-text-color: #e2e8f0;
             --container-bg-color: #2D2D2D;
@@ -22,22 +39,7 @@
             --input-border-color: #4a5568;
             --input-focus-border-color: #63b3ed;
             --modal-bg-color: #2D2D2D;
-        }
-
-        body.dark-mode {
-            --bg-color: #8ACBDA;
-            --header-bg-color: #8ACBDA;
-            --header-text-color: #374151;
-            --container-bg-color: #ffffff;
-            --card-bg-color: #ffffff;
-            --text-color-primary: #374151;
-            --text-color-secondary: #6B7280;
-            --table-header-bg: #e0f2f7;
-            --table-header-text: #457b9d;
-            --border-color-subtle: rgba(224, 242, 247, 0.7);
-            --input-border-color: #bbdefb;
-            --input-focus-border-color: #457b9d;
-            --modal-bg-color: #ffffff;
+            --input-focus-border-color-shadow: rgba(69, 123, 157, 0.3);
         }
 
         body {
@@ -69,8 +71,8 @@
             position: absolute;
             right: 1.5rem;
             top: 8rem;
-            background-color: #4a5568;
-            color: #ffffff;
+            background-color: var(--table-header-bg);
+            color: var(--table-header-text);
             border: none;
             padding: 0.5rem 1rem;
             border-radius: 9999px;
@@ -80,9 +82,11 @@
             transition: background-color 0.3s ease, transform 0.1s ease;
         }
         .dark-mode-toggle:hover {
-            background-color: #2d3748;
+            background-color: var(--input-border-color);
+            transform: scale(1.05);
         }
         .dark-mode-toggle:active {
+            transform: scale(0.98);
         }
 
         .header h1 {
@@ -146,16 +150,44 @@
         input[type="number"]:focus,
         select:focus {
             border-color: var(--input-focus-border-color);
-            box-shadow: 0 0 0 3px rgba(69, 123, 157, 0.3);
+            box-shadow: 0 0 0 3px var(--input-focus-border-color-shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            margin-top: 1rem;
+            border: 1px solid var(--border-color-subtle);
         }
         table th, table td {
             border-bottom: 1px solid var(--border-color-subtle);
             padding: 1rem 1rem;
+            text-align: left;
         }
         table thead th {
             background-color: var(--table-header-bg);
             color: var(--table-header-text);
+            border-bottom: 2px solid var(--border-color-subtle);
         }
+        table tbody tr:nth-child(odd) {
+            background-color: var(--card-bg-color);
+        }
+        table tbody tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.05); /* Slightly darker for even rows in light mode */
+        }
+        body.dark-mode table tbody tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05); /* Slightly darker for even rows in dark mode */
+        }
+        table tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.1); /* Hover effect for rows in light mode */
+            transition: background-color 0.2s ease;
+        }
+        body.dark-mode table tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.15); /* Hover effect for rows in dark mode */
+        }
+
         .modal-content {
             background-color: var(--modal-bg-color);
             border-radius: 1rem;
@@ -191,13 +223,12 @@
         .hover\:text-red-800:hover { color: #e53e3e !important; }
         .text-green-600 { color: #48bb78 !important; }
         .hover\:text-green-800:hover { color: #38a169 !important; }
-
     </style>
 </head>
 <body class="">
     <div class="header">
         <h1 class="text-3xl font-bold">ระบบจัดการสต็อกสินค้า</h1>
-        <button id="darkModeToggle" class="dark-mode-toggle">โหมดกลางวัน</button>
+        <button id="darkModeToggle" class="dark-mode-toggle">โหมดกลางคืน</button>
     </div>
 <div id="app-container" class="w-full">
 <main class="container mx-auto px-4 py-8">
@@ -254,7 +285,7 @@
             </form>
         </div>
 
-        <div class="rounded-xl shadow-md p-6 lg:col-span-2 border-l-4 border-blue-500">
+        <div class="lg:col-span-2 rounded-xl shadow-md p-6 border-l-4 border-blue-500">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-semibold text-gray-800">รายการสินค้า</h2>
                 <div class="flex space-x-2">
@@ -263,8 +294,8 @@
                 </div>
             </div>
             <div class="overflow-x-auto">
-                <table class="min-w-full bg-white">
-                    <thead class="bg-gray-100">
+                <table class="min-w-full">
+                    <thead class="">
                         <tr>
                             <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ชื่อสินค้า</th>
                             <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ประเภท</th>
@@ -290,8 +321,8 @@
             <button id="add-customer-btn" class="btn bg-purple-600 text-white py-2 px-4 rounded-lg">เพิ่มลูกค้า</button>
         </div>
         <div class="overflow-x-auto">
-            <table class="min-w-full bg-white">
-                <thead class="bg-gray-100">
+            <table class="min-w-full">
+                <thead class="">
                     <tr>
                         <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ชื่อลูกค้า</th>
                         <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ที่อยู่</th>
@@ -313,8 +344,8 @@
     <div class="mt-8 rounded-xl shadow-md p-6">
         <h2 class="text-xl font-semibold mb-4 text-gray-800">สรุปตามประเภทสินค้า</h2>
         <div class="overflow-x-auto">
-            <table class="min-w-full bg-white border">
-                <thead class="bg-gray-100">
+            <table class="min-w-full border">
+                <thead class="">
                     <tr>
                         <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">ประเภทสินค้า</th>
                         <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">จำนวนรายการ</th>
@@ -347,8 +378,50 @@
 </main>
 </div>
 
+<div id="edit-product-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="rounded-xl shadow-xl p-6 w-full max-w-md modal-content">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">แก้ไขสินค้า</h3>
+            <button id="close-edit-product-modal" class="text-gray-500 hover:text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form id="edit-product-form" class="space-y-4">
+            <input type="hidden" id="edit-product-id">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อสินค้า</label>
+                <input type="text" id="edit-product-name" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">ประเภทสินค้า</label>
+                <select id="edit-product-category" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                    <option value="อาหาร">อาหาร</option>
+                    <option value="เครื่องดื่ม">เครื่องดื่ม</option>
+                    <option value="เครื่องใช้ไฟฟ้า">เครื่องใช้ไฟฟ้า</option>
+                    <option value="เสื้อผ้า">เสื้อผ้า</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">ราคา (บาท)</label>
+                <input type="number" id="edit-product-price" min="0" step="0.01" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">จำนวน</label>
+                <input type="number" id="edit-product-quantity" min="0" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button type="button" id="cancel-edit-product" class="btn bg-gray-200 text-gray-800 py-2 px-4 rounded-lg">ยกเลิก</button>
+                <button type="submit" class="btn bg-blue-600 text-white py-2 px-4 rounded-lg">บันทึกการแก้ไข</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div id="sell-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-<div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md modal-content">
+<div class="rounded-xl shadow-xl p-6 w-full max-w-md modal-content">
     <div class="flex justify-between items-center mb-4">
         <h3 class="text-xl font-semibold text-gray-800">บันทึกการขาย</h3>
         <button id="close-sell-modal" class="text-gray-500 hover:text-gray-700">
@@ -376,7 +449,7 @@
 </div>
 
 <div id="report-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-<div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto modal-content">
+<div class="rounded-xl shadow-xl p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto modal-content">
     <div class="flex justify-between items-center mb-4">
         <h3 class="text-xl font-semibold text-gray-800">รายงานสรุป</h3>
         <button id="close-report-modal" class="text-gray-500 hover:text-gray-700">
@@ -389,8 +462,8 @@
         <div>
             <h4 class="font-medium text-lg text-gray-700 mb-2">ยอดขายรายวัน</h4>
             <div class="overflow-x-auto">
-                <table class="min-w-full bg-white border">
-                    <thead class="bg-gray-100">
+                <table class="min-w-full border">
+                    <thead class="">
                         <tr>
                             <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">วันที่</th>
                             <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">ยอดขาย</th>
@@ -405,8 +478,8 @@
         <div>
             <h4 class="font-medium text-lg text-gray-700 mb-2">สินค้าขายดี</h4>
             <div class="overflow-x-auto">
-                <table class="min-w-full bg-white border">
-                    <thead class="bg-gray-100">
+                <table class="min-w-full border">
+                    <thead class="">
                         <tr>
                             <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">ชื่อสินค้า</th>
                             <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border">ประเภท</th>
@@ -427,7 +500,7 @@
 </div>
 
 <div id="delivery-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md modal-content">
+    <div class="rounded-xl shadow-xl p-6 w-full max-w-md modal-content">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-semibold text-gray-800">บันทึกการจัดส่งสำเร็จ</h3>
             <button id="close-delivery-modal" class="text-gray-500 hover:text-gray-700">
@@ -455,7 +528,7 @@
 </div>
 
 <div id="customer-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md modal-content">
+    <div class="rounded-xl shadow-xl p-6 w-full max-w-md modal-content">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-semibold text-gray-800">เพิ่มลูกค้าใหม่</h3>
             <button id="close-customer-modal" class="text-gray-500 hover:text-gray-700">
@@ -497,6 +570,44 @@
         </form>
 </div>
 </div>
+
+<div id="edit-customer-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="rounded-xl shadow-xl p-6 w-full max-w-md modal-content">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">แก้ไขข้อมูลลูกค้า</h3>
+            <button id="close-edit-customer-modal" class="text-gray-500 hover:text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form id="edit-customer-form" class="space-y-4">
+            <input type="hidden" id="edit-customer-id">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อลูกค้า</label>
+                <input type="text" id="edit-customer-name" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">ที่อยู่</label>
+                <input type="text" id="edit-customer-address" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">ประเภทรถ</label>
+                <select id="edit-customer-vehicle-type" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:focus:border-blue-500 outline-none transition">
+                    <option value="รถยนต์">รถยนต์</option>
+                    <option value="รถจักรยานยนต์">รถจักรยานยนต์</option>
+                    <option value="รถบรรทุก">รถบรรทุก</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button type="button" id="cancel-edit-customer" class="btn bg-gray-200 text-gray-800 py-2 px-4 rounded-lg">ยกเลิก</button>
+                <button type="submit" class="btn bg-blue-600 text-white py-2 px-4 rounded-lg">บันทึกการแก้ไข</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <script>
 let products = JSON.parse(localStorage.getItem('products')) || [];
@@ -843,28 +954,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const darkModeToggle = document.getElementById('darkModeToggle');
     const body = document.body;
 
-    const currentTheme = localStorage.getItem('theme');
-    if (currentTheme === 'light-mode') {
-        body.classList.add('dark-mode');
-        darkModeToggle.textContent = 'โหมดกลางคืน';
-        document.querySelector('meta[name="theme-color"]').setAttribute('content', '#8ACBDA');
+    // Function to apply theme based on isDarkMode boolean
+    function applyTheme(isDarkMode) {
+        if (isDarkMode) {
+            body.classList.add('dark-mode');
+            darkModeToggle.textContent = 'โหมดกลางวัน'; // Button text to switch to light mode
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', '#2d3748'); // Example dark theme color
+        } else {
+            body.classList.remove('dark-mode');
+            darkModeToggle.textContent = 'โหมดกลางคืน'; // Button text to switch to dark mode
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', '#8ACBDA'); // Example light theme color
+        }
+    }
+
+    // Check saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        applyTheme(true); // Apply dark theme if saved as 'dark'
     } else {
-        body.classList.remove('dark-mode');
-        darkModeToggle.textContent = 'โหมดกลางวัน';
-        document.querySelector('meta[name="theme-color"]').setAttribute('content', '#2d3748');
+        applyTheme(false); // Default to light theme if no preference or saved as 'light'
     }
 
     darkModeToggle.addEventListener('click', () => {
-        body.classList.toggle('dark-mode');
-        if (body.classList.contains('dark-mode')) {
-            localStorage.setItem('theme', 'light-mode');
-            darkModeToggle.textContent = 'โหมดกลางคืน';
-            document.querySelector('meta[name="theme-color"]').setAttribute('content', '#8ACBDA');
-        } else {
-            localStorage.setItem('theme', 'dark-mode');
-            darkModeToggle.textContent = 'โหมดกลางวัน';
-            document.querySelector('meta[name="theme-color"]').setAttribute('content', '#2d3748');
-        }
+        // Toggle theme based on current state
+        const isCurrentlyDark = body.classList.contains('dark-mode');
+        applyTheme(!isCurrentlyDark); // If currently dark, apply light, else apply dark
+        localStorage.setItem('theme', !isCurrentlyDark ? 'dark' : 'light');
     });
 });
 </script>
