@@ -18,7 +18,7 @@
             --text-color-secondary: #a0aec0;
             --table-header-bg: #4a5568;
             --table-header-text: #e2e8f0;
-            --border-color-subtle: rgba(100, 116, 139, 0.7);
+            --border-color-subtle: rgba(160, 174, 192, 0.7);
             --input-border-color: #4a5568;
             --input-focus-border-color: #63b3ed;
             --modal-bg-color: #2D2D2D;
@@ -91,7 +91,6 @@
             margin: 0;
         }
         .container {
-            max-width: 56rem;
             width: 100%;
             padding: 2rem 1rem;
             background-color: var(--container-bg-color);
@@ -99,16 +98,22 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
             margin-top: 2rem;
         }
+
+        @media (min-width: 768px) { /* สำหรับหน้าจอขนาดกลาง (md) ขึ้นไป */
+            .container {
+                max-width: 56rem; /* กำหนดความกว้างสูงสุด */
+            }
+        }
         .card, .bg-white.rounded-xl {
             background-color: var(--card-bg-color);
             border-radius: 1rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
             transition: all 0.2s ease-in-out;
             border: 1px solid var(--border-color-subtle);
         }
         .card:hover, .bg-white.rounded-xl:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.12), 0 6px 10px -3px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.3), 0 6px 10px -3px rgba(0, 0, 0, 0.15);
         }
         .btn {
             border-radius: 0.5rem;
@@ -191,12 +196,12 @@
 
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="">
     <div class="header">
         <h1 class="text-3xl font-bold">ระบบจัดการสต็อกสินค้า</h1>
         <button id="darkModeToggle" class="dark-mode-toggle">โหมดกลางวัน</button>
     </div>
-<div id="app-container">
+<div id="app-container" class="w-full">
 <main class="container mx-auto px-4 py-8">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
         <div class="card p-6 border-l-4 border-blue-500">
