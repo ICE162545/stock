@@ -331,8 +331,6 @@
                         <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ชื่อลูกค้า</th>
                         <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ที่อยู่</th>
                         <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ประเภทรถ</th>
-                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">จำนวน</th>
-                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ราคารวม</th>
                         <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">จัดการ</th>
                     </tr>
                 </thead>
@@ -342,6 +340,34 @@
         </div>
         <div id="empty-customer-message" class="text-center py-8 text-gray-500">
             ยังไม่มีลูกค้าในระบบ กรุณาเพิ่มลูกค้า
+        </div>
+    </div>
+
+    <div class="mt-8 rounded-xl shadow-md p-6 border-l-4 border-orange-500">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-800">ประวัติการจัดส่ง</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full">
+                <thead class="">
+                    <tr>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ชื่อลูกค้า</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ที่อยู่</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ชื่อสินค้า</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ประเภทสินค้า</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">จำนวน</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ราคาต่อหน่วย</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">ยอดรวม</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">วันที่จัดส่ง</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody id="delivery-history-list">
+                </tbody>
+            </table>
+        </div>
+        <div id="empty-delivery-message" class="text-center py-8 text-gray-500">
+            ยังไม่มีประวัติการจัดส่ง
         </div>
     </div>
 
@@ -520,8 +546,18 @@
                 </select>
             </div>
             <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">เลือกผู้รับ (ลูกค้า)</label>
+                <select id="delivery-customer" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+                    <option value="">-- เลือกลูกค้า --</option>
+                </select>
+            </div>
+            <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">จำนวนที่จัดส่ง</label>
                 <input type="number" id="delivery-quantity" min="1" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">ราคารวม (บาท)</label>
+                <input type="number" id="delivery-total-price" min="0" step="0.01" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required readonly>
             </div>
             <div class="flex justify-end space-x-2">
                 <button type="button" id="cancel-delivery" class="btn bg-gray-200 text-gray-800 py-2 px-4 rounded-lg">ยกเลิก</button>
@@ -561,18 +597,18 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">จำนวน</label>
-                <input type="number" id="customer-quantity" min="1" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+                <input type="number" id="customer-quantity" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">ราคารวม (บาท)</label>
-                <input type="number" id="customer-price" min="0" step="0.01" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
+                <label class="block text-sm font-medium text-gray-700 mb-1">ราคาต่อหน่วย</label>
+                <input type="number" id="customer-price" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" required>
             </div>
             <div class="flex justify-end space-x-2">
                 <button type="button" id="cancel-customer" class="btn bg-gray-200 text-gray-800 py-2 px-4 rounded-lg">ยกเลิก</button>
                 <button type="submit" class="btn bg-blue-600 text-white py-2 px-4 rounded-lg">เพิ่มลูกค้า</button>
             </div>
         </form>
-</div>
+    </div>
 </div>
 
 <div id="edit-customer-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
@@ -618,6 +654,9 @@ let products = JSON.parse(localStorage.getItem('products')) || [];
 let sales = JSON.parse(localStorage.getItem('sales')) || [];
 let customers = JSON.parse(localStorage.getItem('customers')) || [];
 
+// Ensure each customer object has a 'deliveries' array
+customers = customers.map(customer => ({ ...customer, deliveries: customer.deliveries || [] }));
+
 function formatCurrency(amount) {
     return '฿' + parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 }
@@ -652,6 +691,9 @@ function updateDashboard() {
     
     updateCategorySummary();
     renderDailySalesChart();
+    renderProducts();
+    renderCustomers();
+    renderDeliveryHistory();
 }
 
 function renderProducts() {
@@ -766,54 +808,114 @@ document.getElementById('sell-form').addEventListener('submit', function(e) {
 const deliveryModal = document.getElementById('delivery-modal');
 const deliveryProductSelect = document.getElementById('delivery-product');
 let currentDeliveryProductId = null;
+const deliveryCustomerSelect = document.getElementById('delivery-customer');
+const deliveryQuantityInput = document.getElementById('delivery-quantity');
+const deliveryTotalPriceInput = document.getElementById('delivery-total-price');
 
 function openDeliveryModal(productId = null) {
     currentDeliveryProductId = productId;
+    // Populate product select
+    deliveryProductSelect.innerHTML = products.map(p => `<option value="${p.id}">${p.name} (${p.quantity} ชิ้น)</option>`).join('');
     if (productId) {
-        const product = products.find(p => p.id === productId);
-        if (product) {
-            deliveryProductSelect.innerHTML = `<option value="${product.id}">${product.name} (${product.quantity} ชิ้น)</option>`;
-            document.getElementById('delivery-quantity').value = 1;
-        } else {
-            alert('ไม่พบสินค้าที่เลือก!');
-            deliveryModal.classList.add('hidden');
-        return;
-        }
+        deliveryProductSelect.value = productId;
+        deliveryProductSelect.disabled = true; // Disable product selection if opened from product row
     } else {
-        deliveryProductSelect.innerHTML = products.map(p => `<option value="${p.id}">${p.name} (${p.quantity} ชิ้น)</option>`).join('');
+        deliveryProductSelect.disabled = false;
     }
+
+    // Populate customer select
+    deliveryCustomerSelect.innerHTML = '<option value="">-- เลือกลูกค้า --</option>' + customers.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    
+    // Reset quantity and total price
+    deliveryQuantityInput.value = 1;
+    updateDeliveryTotalPrice();
+
     deliveryModal.classList.remove('hidden');
+}
+
+function updateDeliveryTotalPrice() {
+    const productId = deliveryProductSelect.value;
+    const quantity = parseInt(deliveryQuantityInput.value);
+    const product = products.find(p => p.id === productId);
+    if (product && quantity > 0) {
+        deliveryTotalPriceInput.value = (product.price * quantity).toFixed(2);
+    } else {
+        deliveryTotalPriceInput.value = '0.00';
+    }
 }
 
 document.getElementById('close-delivery-modal').addEventListener('click', () => deliveryModal.classList.add('hidden'));
 document.getElementById('cancel-delivery').addEventListener('click', () => deliveryModal.classList.add('hidden'));
 
+deliveryProductSelect.addEventListener('change', updateDeliveryTotalPrice);
+deliveryQuantityInput.addEventListener('input', updateDeliveryTotalPrice);
+
 document.getElementById('delivery-form').addEventListener('submit', function(e) {
     e.preventDefault();
     const productId = deliveryProductSelect.value;
-    const deliveryQuantity = parseInt(document.getElementById('delivery-quantity').value);
+    const customerId = deliveryCustomerSelect.value;
+    const deliveryQuantity = parseInt(deliveryQuantityInput.value);
 
-    const productIndex = products.findIndex(p => p.id === productId);
-    if (productIndex > -1) {
-        if (products[productIndex].quantity >= deliveryQuantity) {
-            products[productIndex].quantity -= deliveryQuantity;
+    if (!customerId) {
+        alert('กรุณาเลือกลูกค้า!');
+        return;
+    }
+
+    const product = products.find(p => p.id === productId);
+    const customer = customers.find(c => c.id === customerId);
+
+    if (product && customer) {
+        if (product.quantity >= deliveryQuantity) {
+            product.quantity -= deliveryQuantity;
+            const unitPrice = product.price;
+            const deliveryTotalValue = unitPrice * deliveryQuantity;
+
+            const newDelivery = {
+                id: Date.now().toString(),
+                productId: product.id,
+                productName: product.name,
+                productCategory: product.category,
+                quantity: deliveryQuantity,
+                unitPrice: unitPrice,
+                totalPrice: deliveryTotalValue,
+                date: getTodayDate()
+            };
+            customer.deliveries.push(newDelivery);
+            
+            const todayDate = getTodayDate();
+            const existingSaleIndex = sales.findIndex(s => s.date === todayDate);
+            if (existingSaleIndex > -1) {
+                sales[existingSaleIndex].total += deliveryTotalValue;
+                sales[existingSaleIndex].items_count += deliveryQuantity;
+            } else {
+                sales.push({
+                    date: todayDate,
+                    total: deliveryTotalValue,
+                    items_count: deliveryQuantity
+                });
+            }
+
             localStorage.setItem('products', JSON.stringify(products));
+            localStorage.setItem('sales', JSON.stringify(sales));
+            localStorage.setItem('customers', JSON.stringify(customers));
             updateDashboard();
             renderProducts();
+            renderCustomers();
             deliveryModal.classList.add('hidden');
             this.reset();
-            alert(`สินค้า ${products[productIndex].name} จำนวน ${deliveryQuantity} ชิ้น จัดส่งสำเร็จ!`);
+            alert(`สินค้า ${product.name} จำนวน ${deliveryQuantity} ชิ้น จัดส่งสำเร็จให้ลูกค้า ${customer.name} แล้ว!`);
         } else {
             alert('จำนวนสินค้าไม่เพียงพอสำหรับการจัดส่ง!');
         }
     } else {
-        alert('ไม่พบสินค้า!');
+        alert('ไม่พบสินค้าหรือลูกค้า!');
     }
 });
 
 function renderCustomers() {
     const customerList = document.getElementById('customer-list');
     customerList.innerHTML = '';
+    
     if (customers.length === 0) {
         document.getElementById('empty-customer-message').style.display = 'block';
     } else {
@@ -824,8 +926,6 @@ function renderCustomers() {
                 <td class="py-3 px-4 text-sm text-gray-800">${customer.name}</td>
                 <td class="py-3 px-4 text-sm text-gray-800">${customer.address}</td>
                 <td class="py-3 px-4 text-sm text-gray-800">${customer.vehicleType}</td>
-                <td class="py-3 px-4 text-sm text-gray-800">${customer.quantity}</td>
-                <td class="py-3 px-4 text-sm text-gray-800">${formatCurrency(customer.price)}</td>
                 <td class="py-3 px-4 text-sm text-gray-800">
                     <button class="text-blue-600 hover:text-blue-800 mr-2 edit-customer-btn" data-id="${customer.id}">แก้ไข</button>
                     <button class="text-red-600 hover:text-red-800 delete-customer-btn" data-id="${customer.id}">ลบ</button>
@@ -833,46 +933,60 @@ function renderCustomers() {
             `;
         });
     }
-    attachCustomerEventListeners();
+    attachCustomerEventListeners(); // Re-attach listeners for customer-specific buttons
 }
 
-const customerModal = document.getElementById('customer-modal');
-const addCustomerBtn = document.getElementById('add-customer-btn');
-const closeCustomerModalBtn = document.getElementById('close-customer-modal');
-const cancelCustomerBtn = document.getElementById('cancel-customer');
-const customerForm = document.getElementById('customer-form');
+function renderDeliveryHistory() {
+    const deliveryHistoryList = document.getElementById('delivery-history-list');
+    deliveryHistoryList.innerHTML = '';
 
-addCustomerBtn.addEventListener('click', () => {
-    customerForm.reset();
-    customerModal.classList.remove('hidden');
-});
+    let allDeliveries = [];
+    customers.forEach(customer => {
+        if (customer.deliveries) {
+            customer.deliveries.forEach(delivery => {
+                allDeliveries.push({ ...delivery, customerName: customer.name, customerAddress: customer.address, customerId: customer.id });
+            });
+        }
+    });
 
-closeCustomerModalBtn.addEventListener('click', () => customerModal.classList.add('hidden'));
-cancelCustomerBtn.addEventListener('click', () => customerModal.classList.add('hidden'));
+    // Group deliveries by product name
+    const groupedDeliveries = allDeliveries.reduce((acc, delivery) => {
+        if (!acc[delivery.productName]) {
+            acc[delivery.productName] = [];
+        }
+        acc[delivery.productName].push(delivery);
+        return acc;
+    }, {});
 
-customerForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const name = document.getElementById('customer-name').value;
-    const address = document.getElementById('customer-address').value;
-    const vehicleType = document.getElementById('customer-vehicle-type').value;
-    const quantity = parseInt(document.getElementById('customer-quantity').value);
-    const price = parseFloat(document.getElementById('customer-price').value);
+    let anyDeliveryRendered = false;
 
-    const newCustomer = {
-        id: Date.now().toString(),
-        name,
-        address,
-        vehicleType,
-        quantity,
-        price
-    };
-    customers.push(newCustomer);
-    localStorage.setItem('customers', JSON.stringify(customers));
-    customerModal.classList.add('hidden');
-    updateDashboard();
-    renderCustomers();
-    alert('เพิ่มลูกค้าเรียบร้อย!');
-});
+    for (const productName in groupedDeliveries) {
+        groupedDeliveries[productName].forEach(delivery => {
+            const row = deliveryHistoryList.insertRow();
+            row.innerHTML = `
+                <td class="py-3 px-4 text-sm text-gray-800">${delivery.customerName}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">${delivery.customerAddress}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">${delivery.productName}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">${delivery.productCategory}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">${delivery.quantity}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">${formatCurrency(delivery.unitPrice)}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">${formatCurrency(delivery.totalPrice)}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">${formatDate(delivery.date)}</td>
+                <td class="py-3 px-4 text-sm text-gray-800">
+                    <button class="text-red-600 hover:text-red-800 delete-delivery-btn" data-customer-id="${delivery.customerId}" data-delivery-id="${delivery.id}">ลบ</button>
+                </td>
+            `;
+            anyDeliveryRendered = true;
+        });
+    }
+
+    if (!anyDeliveryRendered) {
+        document.getElementById('empty-delivery-message').style.display = 'block';
+    } else {
+        document.getElementById('empty-delivery-message').style.display = 'none';
+    }
+    attachDeliveryEventListeners(); // Re-attach listeners for delivery-specific buttons
+}
 
 function editCustomer(id) {
     const customer = customers.find(c => c.id === id);
@@ -881,13 +995,6 @@ function editCustomer(id) {
         document.getElementById('edit-customer-name').value = customer.name;
         document.getElementById('edit-customer-address').value = customer.address;
         document.getElementById('edit-customer-vehicle-type').value = customer.vehicleType;
-        // Ensure quantity and price are also set if they exist in the customer object
-        if (customer.quantity) {
-            document.getElementById('edit-customer-quantity').value = customer.quantity;
-        }
-        if (customer.price) {
-            document.getElementById('edit-customer-price').value = customer.price;
-        }
         document.getElementById('edit-customer-modal').classList.remove('hidden');
     }
 }
@@ -898,11 +1005,9 @@ function saveEditCustomer(event) {
     const name = document.getElementById('edit-customer-name').value;
     const address = document.getElementById('edit-customer-address').value;
     const vehicleType = document.getElementById('edit-customer-vehicle-type').value;
-    const quantity = parseInt(document.getElementById('edit-customer-quantity').value);
-    const price = parseFloat(document.getElementById('edit-customer-price').value);
-
+    
     customers = customers.map(customer =>
-        customer.id === id ? { ...customer, name, address, vehicleType, quantity, price } : customer
+        customer.id === id ? { ...customer, name, address, vehicleType } : customer
     );
     localStorage.setItem('customers', JSON.stringify(customers));
     document.getElementById('edit-customer-modal').classList.add('hidden');
@@ -912,10 +1017,49 @@ function saveEditCustomer(event) {
 
 function deleteCustomer(id) {
     if (confirm('คุณต้องการลบลูกค้ารายนี้ใช่หรือไม่?')) {
+        // Before deleting the customer, ensure to handle associated deliveries or prevent deletion if deliveries exist
+        // For now, let's assume deleting a customer also removes their delivery history.
         customers = customers.filter(customer => customer.id !== id);
         localStorage.setItem('customers', JSON.stringify(customers));
         updateDashboard();
         renderCustomers();
+    }
+}
+
+function deleteDelivery(customerId, deliveryId) {
+    if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรายการจัดส่งนี้?')) {
+        const customer = customers.find(c => c.id === customerId);
+        if (customer) {
+            const deliveryIndex = customer.deliveries.findIndex(d => d.id === deliveryId);
+            if (deliveryIndex > -1) {
+                const deletedDelivery = customer.deliveries[deliveryIndex];
+                customer.deliveries.splice(deliveryIndex, 1);
+
+                // Add stock back to product
+                const product = products.find(p => p.id === deletedDelivery.productId);
+                if (product) {
+                    product.quantity += deletedDelivery.quantity;
+                    localStorage.setItem('products', JSON.stringify(products));
+                }
+
+                // Adjust daily sales
+                const todayDate = getTodayDate();
+                const existingSaleIndex = sales.findIndex(s => s.date === todayDate);
+                if (existingSaleIndex > -1) {
+                    sales[existingSaleIndex].total -= deletedDelivery.totalPrice;
+                    sales[existingSaleIndex].items_count -= deletedDelivery.quantity;
+                    if (sales[existingSaleIndex].total < 0) sales[existingSaleIndex].total = 0; // Prevent negative sales
+                    if (sales[existingSaleIndex].items_count < 0) sales[existingSaleIndex].items_count = 0; // Prevent negative item count
+                }
+                localStorage.setItem('sales', JSON.stringify(sales));
+                localStorage.setItem('customers', JSON.stringify(customers));
+
+                updateDashboard();
+                renderProducts(); // Re-render products to reflect updated stock
+                renderCustomers(); // Re-render customers to reflect updated delivery history
+                alert('ลบรายการจัดส่งเรียบร้อยแล้ว!');
+            }
+        }
     }
 }
 
@@ -1006,7 +1150,18 @@ function attachCustomerEventListeners() {
     });
 }
 
+function attachDeliveryEventListeners() {
+    document.querySelectorAll('.delete-delivery-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const customerId = e.target.dataset.customerId;
+            const deliveryId = e.target.dataset.deliveryId;
+            deleteDelivery(customerId, deliveryId);
+        });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded loaded.');
     updateDashboard();
     renderProducts();
     renderCustomers();
@@ -1051,6 +1206,44 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('รีเซ็ตข้อมูลเรียบร้อยแล้ว!');
             window.location.reload(); // Reload the page to reflect empty state
         }
+    });
+
+    const customerModal = document.getElementById('customer-modal');
+    const addCustomerBtn = document.getElementById('add-customer-btn');
+    console.log('addCustomerBtn:', addCustomerBtn); // DEBUG
+    const closeCustomerModalBtn = document.getElementById('close-customer-modal');
+    const cancelCustomerBtn = document.getElementById('cancel-customer');
+    const customerForm = document.getElementById('customer-form');
+
+    addCustomerBtn.addEventListener('click', () => {
+        console.log('Add customer button clicked!'); // DEBUG
+        customerForm.reset();
+        customerModal.classList.remove('hidden');
+    });
+
+    closeCustomerModalBtn.addEventListener('click', () => customerModal.classList.add('hidden'));
+    cancelCustomerBtn.addEventListener('click', () => customerModal.classList.add('hidden'));
+
+    customerForm.addEventListener('submit', function(e) {
+        console.log('Customer form submitted!'); // DEBUG
+        e.preventDefault();
+        const name = document.getElementById('customer-name').value;
+        const address = document.getElementById('customer-address').value;
+        const vehicleType = document.getElementById('customer-vehicle-type').value;
+        
+        const newCustomer = {
+            id: Date.now().toString(),
+            name,
+            address,
+            vehicleType,
+            deliveries: [] // Initialize with an empty deliveries array
+        };
+        customers.push(newCustomer);
+        localStorage.setItem('customers', JSON.stringify(customers));
+        customerModal.classList.add('hidden');
+        updateDashboard();
+        renderCustomers();
+        alert('เพิ่มลูกค้าเรียบร้อย!');
     });
 });
 </script>
